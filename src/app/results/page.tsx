@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { RotateCcw, Copy, Link2, Check, Zap, AlertTriangle, ArrowRight } from 'lucide-react';
@@ -8,7 +8,7 @@ import { Persona, TraitScores, TraitKey } from '@/config/survey';
 import { decodeResultsFromUrl, getTraitLevels, determineAudienceSegment } from '@/lib/scoring';
 import { clearProgress } from '@/lib/storage';
 
-export default function ResultsPage() {
+function ResultsContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [persona, setPersona] = useState<Persona | null>(null);
@@ -290,5 +290,19 @@ export default function ResultsPage() {
         </motion.div>
       </div>
     </main>
+  );
+}
+
+export default function ResultsPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex items-center justify-center">
+          <div className="w-8 h-8 border-2 border-slate-300 border-t-slate-600 rounded-full animate-spin" />
+        </div>
+      }
+    >
+      <ResultsContent />
+    </Suspense>
   );
 }
